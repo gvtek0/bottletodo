@@ -10,20 +10,24 @@ def todo_list():
     c.close()
     return template('make_table', rows=result)
 
+@route('/new', method='GET')
 def new_item():
 
-    new = request.GET.task.strip()
+    if request.GET.save:
 
-    conn = sqlite3.connect('todo.db')
-    c = conn.cursor()
+        new = request.GET.task.strip()
+        conn = sqlite3.connect('todo.db')
+        c = conn.cursor()
 
-    c.execute("INSERT INTO todo (task,status) VALUES (?,?)", (new, 1))
-    new_id = c.lastrowid
+        c.execute("INSERT INTO todo (task,status) VALUES (?,?)", (new,1))
+        new_id = c.lastrowid
 
-    conn.commit()
-    c.close()
+        conn.commit()
+        c.close()
 
-    return '<p>The new task was inserted into the database, the ID is %s</p>' % new_id
+        return '<p>The new task was inserted into the database, the ID is %s</p>' % new_id
+    else:
+        return template('new_task.tpl')
 
 debug(True)
 run(reloader=True)
